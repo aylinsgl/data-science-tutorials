@@ -170,6 +170,7 @@
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="project1_transportations.html">Project 1: Supply Chain Sustainability</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Digital Twin</a></li>
+
 </ul>
 </details></li>
 </ul>
@@ -359,14 +360,22 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Digital Twin</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-blocks">Simulation blocks</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warehouse">Warehouse</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trucks">Trucks</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#store">Store</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation">Simulation</a></li>
 </ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#playground">Playground</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation">Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-example-inventory">Optimization example: inventory</a></li>
+</ul>
+</li>
+</ul>
+
             </nav>
         </div>
     </div>
@@ -570,6 +579,10 @@ Store inventory: {&#39;A&#39;: 5}
 </div>
 </section>
 </section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="playground">
+<h1>Playground<a class="headerlink" href="#playground" title="Link to this heading">#</a></h1>
+<p>here I’m playing aroung with different concepts, simulating the supply chain over time logging demand and inventory and trying out optimization examples</p>
 <section id="simulation">
 <h2>Simulation<a class="headerlink" href="#simulation" title="Link to this heading">#</a></h2>
 <div class="cell tag_hide-input docutils container">
@@ -785,215 +798,400 @@ Store inventory: {&#39;A&#39;: 5}
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Time Step 0 ---
-Store at Store_1 requests 9 units of WidgetA.
-Loading 9 of WidgetA onto truck.
-Delivered 9 WidgetA to Store_1.
+Store at Store_1 requests 7 units of WidgetA.
+Loading 7 of WidgetA onto truck.
+Delivered 7 WidgetA to Store_1.
 
-Store at Store_2 requests 15 units of WidgetA.
-Loading 15 of WidgetA onto truck.
-Delivered 15 WidgetA to Store_2.
+Store at Store_2 requests 9 units of WidgetC.
+Loading 9 of WidgetC onto truck.
+Delivered 9 WidgetC to Store_2.
 
 
 --- Time Step 1 ---
-Store at Store_1 requests 13 units of WidgetC.
-Loading 13 of WidgetC onto truck.
-Delivered 13 WidgetC to Store_1.
+Store at Store_1 requests 10 units of WidgetC.
+Loading 10 of WidgetC onto truck.
+Delivered 10 WidgetC to Store_1.
 
 Store at Store_2 requests 15 units of WidgetA.
 Loading 15 of WidgetA onto truck.
 Delivered 15 WidgetA to Store_2.
 
-Restocked Warehouse_1: +50 units of WidgetA. (Previous: 11, New: 61)
 
 --- Time Step 2 ---
-Store at Store_1 requests 14 units of WidgetA.
-Loading 14 of WidgetA onto truck.
-Delivered 14 WidgetA to Store_1.
+Store at Store_1 requests 6 units of WidgetA.
+Loading 6 of WidgetA onto truck.
+Delivered 6 WidgetA to Store_1.
+
+Store at Store_2 requests 9 units of WidgetB.
+Loading 9 of WidgetB onto truck.
+Delivered 9 WidgetB to Store_2.
+
+
+--- Time Step 3 ---
+Store at Store_1 requests 11 units of WidgetA.
+Loading 11 of WidgetA onto truck.
+Delivered 11 WidgetA to Store_1.
+
+Store at Store_2 requests 9 units of WidgetC.
+Loading 9 of WidgetC onto truck.
+Delivered 9 WidgetC to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetA. (Previous: 11, New: 61)
+
+--- Time Step 4 ---
+Store at Store_1 requests 9 units of WidgetC.
+Loading 9 of WidgetC onto truck.
+Delivered 9 WidgetC to Store_1.
 
 Store at Store_2 requests 7 units of WidgetB.
 Loading 7 of WidgetB onto truck.
 Delivered 7 WidgetB to Store_2.
 
 
---- Time Step 3 ---
-Store at Store_1 requests 5 units of WidgetC.
-Loading 5 of WidgetC onto truck.
-Delivered 5 WidgetC to Store_1.
-
-Store at Store_2 requests 14 units of WidgetB.
-Loading 14 of WidgetB onto truck.
-Delivered 14 WidgetB to Store_2.
-
-Restocked Warehouse_1: +50 units of WidgetB. (Previous: 19, New: 69)
-
---- Time Step 4 ---
-Store at Store_1 requests 6 units of WidgetC.
-Loading 6 of WidgetC onto truck.
-Delivered 6 WidgetC to Store_1.
-
-Store at Store_2 requests 10 units of WidgetC.
-Loading 10 of WidgetC onto truck.
-Delivered 10 WidgetC to Store_2.
-
-
 --- Time Step 5 ---
-Store at Store_1 requests 11 units of WidgetC.
-Loading 11 of WidgetC onto truck.
-Delivered 11 WidgetC to Store_1.
+Store at Store_1 requests 12 units of WidgetC.
+Loading 12 of WidgetC onto truck.
+Delivered 12 WidgetC to Store_1.
 
-Store at Store_2 requests 10 units of WidgetA.
-Loading 10 of WidgetA onto truck.
-Delivered 10 WidgetA to Store_2.
+Store at Store_2 requests 13 units of WidgetC.
+Warehouse at Warehouse_1 does not have enough WidgetC in stock.
 
-Restocked Warehouse_1: +50 units of WidgetC. (Previous: 15, New: 65)
+Restocked Warehouse_1: +50 units of WidgetC. (Previous: 11, New: 61)
 
 --- Time Step 6 ---
-Store at Store_1 requests 13 units of WidgetB.
-Loading 13 of WidgetB onto truck.
-Delivered 13 WidgetB to Store_1.
-
-Store at Store_2 requests 8 units of WidgetB.
-Loading 8 of WidgetB onto truck.
-Delivered 8 WidgetB to Store_2.
-
-
---- Time Step 7 ---
-Store at Store_1 requests 11 units of WidgetA.
-Loading 11 of WidgetA onto truck.
-Delivered 11 WidgetA to Store_1.
-
-Store at Store_2 requests 11 units of WidgetA.
-Loading 11 of WidgetA onto truck.
-Delivered 11 WidgetA to Store_2.
-
-Restocked Warehouse_1: +50 units of WidgetA. (Previous: 15, New: 65)
-
---- Time Step 8 ---
-Store at Store_1 requests 8 units of WidgetB.
-Loading 8 of WidgetB onto truck.
-Delivered 8 WidgetB to Store_1.
+Store at Store_1 requests 14 units of WidgetC.
+Loading 14 of WidgetC onto truck.
+Delivered 14 WidgetC to Store_1.
 
 Store at Store_2 requests 10 units of WidgetB.
 Loading 10 of WidgetB onto truck.
 Delivered 10 WidgetB to Store_2.
 
+Restocked Warehouse_1: +50 units of WidgetB. (Previous: 14, New: 64)
 
---- Time Step 9 ---
-Store at Store_1 requests 15 units of WidgetA.
-Loading 15 of WidgetA onto truck.
-Delivered 15 WidgetA to Store_1.
-
-Store at Store_2 requests 8 units of WidgetC.
-Loading 8 of WidgetC onto truck.
-Delivered 8 WidgetC to Store_2.
-
-
---- Time Step 10 ---
-Store at Store_1 requests 7 units of WidgetB.
-Loading 7 of WidgetB onto truck.
-Delivered 7 WidgetB to Store_1.
-
-Store at Store_2 requests 7 units of WidgetB.
-Loading 7 of WidgetB onto truck.
-Delivered 7 WidgetB to Store_2.
-
-Restocked Warehouse_1: +50 units of WidgetB. (Previous: 16, New: 66)
-
---- Time Step 11 ---
-Store at Store_1 requests 7 units of WidgetA.
-Loading 7 of WidgetA onto truck.
-Delivered 7 WidgetA to Store_1.
-
-Store at Store_2 requests 15 units of WidgetA.
-Loading 15 of WidgetA onto truck.
-Delivered 15 WidgetA to Store_2.
-
-
---- Time Step 12 ---
-Store at Store_1 requests 10 units of WidgetC.
-Loading 10 of WidgetC onto truck.
-Delivered 10 WidgetC to Store_1.
-
-Store at Store_2 requests 11 units of WidgetC.
-Loading 11 of WidgetC onto truck.
-Delivered 11 WidgetC to Store_2.
-
-
---- Time Step 13 ---
-Store at Store_1 requests 15 units of WidgetC.
-Loading 15 of WidgetC onto truck.
-Delivered 15 WidgetC to Store_1.
-
-Store at Store_2 requests 9 units of WidgetA.
-Loading 9 of WidgetA onto truck.
-Delivered 9 WidgetA to Store_2.
-
-Restocked Warehouse_1: +50 units of WidgetA. (Previous: 19, New: 69)
-
---- Time Step 14 ---
-Store at Store_1 requests 8 units of WidgetC.
-Loading 8 of WidgetC onto truck.
-Delivered 8 WidgetC to Store_1.
-
-Store at Store_2 requests 7 units of WidgetB.
-Loading 7 of WidgetB onto truck.
-Delivered 7 WidgetB to Store_2.
-
-Restocked Warehouse_1: +50 units of WidgetC. (Previous: 13, New: 63)
-
---- Time Step 15 ---
-Store at Store_1 requests 6 units of WidgetA.
-Loading 6 of WidgetA onto truck.
-Delivered 6 WidgetA to Store_1.
-
-Store at Store_2 requests 6 units of WidgetB.
-Loading 6 of WidgetB onto truck.
-Delivered 6 WidgetB to Store_2.
-
-
---- Time Step 16 ---
-Store at Store_1 requests 10 units of WidgetA.
-Loading 10 of WidgetA onto truck.
-Delivered 10 WidgetA to Store_1.
-
-Store at Store_2 requests 6 units of WidgetC.
-Loading 6 of WidgetC onto truck.
-Delivered 6 WidgetC to Store_2.
-
-
---- Time Step 17 ---
-Store at Store_1 requests 15 units of WidgetC.
-Loading 15 of WidgetC onto truck.
-Delivered 15 WidgetC to Store_1.
+--- Time Step 7 ---
+Store at Store_1 requests 5 units of WidgetC.
+Loading 5 of WidgetC onto truck.
+Delivered 5 WidgetC to Store_1.
 
 Store at Store_2 requests 12 units of WidgetA.
 Loading 12 of WidgetA onto truck.
 Delivered 12 WidgetA to Store_2.
 
 
---- Time Step 18 ---
-Store at Store_1 requests 6 units of WidgetC.
-Loading 6 of WidgetC onto truck.
-Delivered 6 WidgetC to Store_1.
+--- Time Step 8 ---
+Store at Store_1 requests 6 units of WidgetB.
+Loading 6 of WidgetB onto truck.
+Delivered 6 WidgetB to Store_1.
+
+Store at Store_2 requests 7 units of WidgetB.
+Loading 7 of WidgetB onto truck.
+Delivered 7 WidgetB to Store_2.
+
+
+--- Time Step 9 ---
+Store at Store_1 requests 7 units of WidgetB.
+Loading 7 of WidgetB onto truck.
+Delivered 7 WidgetB to Store_1.
 
 Store at Store_2 requests 7 units of WidgetC.
 Loading 7 of WidgetC onto truck.
 Delivered 7 WidgetC to Store_2.
 
 
+--- Time Step 10 ---
+Store at Store_1 requests 12 units of WidgetA.
+Loading 12 of WidgetA onto truck.
+Delivered 12 WidgetA to Store_1.
+
+Store at Store_2 requests 13 units of WidgetA.
+Loading 13 of WidgetA onto truck.
+Delivered 13 WidgetA to Store_2.
+
+
+--- Time Step 11 ---
+Store at Store_1 requests 9 units of WidgetA.
+Loading 9 of WidgetA onto truck.
+Delivered 9 WidgetA to Store_1.
+
+Store at Store_2 requests 13 units of WidgetA.
+Loading 13 of WidgetA onto truck.
+Delivered 13 WidgetA to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetA. (Previous: 2, New: 52)
+
+--- Time Step 12 ---
+Store at Store_1 requests 12 units of WidgetA.
+Loading 12 of WidgetA onto truck.
+Delivered 12 WidgetA to Store_1.
+
+Store at Store_2 requests 7 units of WidgetC.
+Loading 7 of WidgetC onto truck.
+Delivered 7 WidgetC to Store_2.
+
+
+--- Time Step 13 ---
+Store at Store_1 requests 13 units of WidgetA.
+Loading 13 of WidgetA onto truck.
+Delivered 13 WidgetA to Store_1.
+
+Store at Store_2 requests 10 units of WidgetA.
+Loading 10 of WidgetA onto truck.
+Delivered 10 WidgetA to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetA. (Previous: 17, New: 67)
+
+--- Time Step 14 ---
+Store at Store_1 requests 11 units of WidgetC.
+Loading 11 of WidgetC onto truck.
+Delivered 11 WidgetC to Store_1.
+
+Store at Store_2 requests 5 units of WidgetB.
+Loading 5 of WidgetB onto truck.
+Delivered 5 WidgetB to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetC. (Previous: 17, New: 67)
+
+--- Time Step 15 ---
+Store at Store_1 requests 5 units of WidgetB.
+Loading 5 of WidgetB onto truck.
+Delivered 5 WidgetB to Store_1.
+
+Store at Store_2 requests 7 units of WidgetC.
+Loading 7 of WidgetC onto truck.
+Delivered 7 WidgetC to Store_2.
+
+
+--- Time Step 16 ---
+Store at Store_1 requests 13 units of WidgetC.
+Loading 13 of WidgetC onto truck.
+Delivered 13 WidgetC to Store_1.
+
+Store at Store_2 requests 9 units of WidgetB.
+Loading 9 of WidgetB onto truck.
+Delivered 9 WidgetB to Store_2.
+
+
+--- Time Step 17 ---
+Store at Store_1 requests 15 units of WidgetA.
+Loading 15 of WidgetA onto truck.
+Delivered 15 WidgetA to Store_1.
+
+Store at Store_2 requests 10 units of WidgetC.
+Loading 10 of WidgetC onto truck.
+Delivered 10 WidgetC to Store_2.
+
+
+--- Time Step 18 ---
+Store at Store_1 requests 12 units of WidgetB.
+Loading 12 of WidgetB onto truck.
+Delivered 12 WidgetB to Store_1.
+
+Store at Store_2 requests 14 units of WidgetA.
+Loading 14 of WidgetA onto truck.
+Delivered 14 WidgetA to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetB. (Previous: 13, New: 63)
+
 --- Time Step 19 ---
-Store at Store_1 requests 15 units of WidgetC.
-Loading 15 of WidgetC onto truck.
-Delivered 15 WidgetC to Store_1.
+Store at Store_1 requests 7 units of WidgetB.
+Loading 7 of WidgetB onto truck.
+Delivered 7 WidgetB to Store_1.
 
-Store at Store_2 requests 15 units of WidgetB.
-Loading 15 of WidgetB onto truck.
-Delivered 15 WidgetB to Store_2.
-
-Restocked Warehouse_1: +50 units of WidgetC. (Previous: 14, New: 64)
+Store at Store_2 requests 8 units of WidgetA.
+Loading 8 of WidgetA onto truck.
+Delivered 8 WidgetA to Store_2.
 </pre></div>
 </div>
-<img alt="../_images/07bd62db2e10b185109ba636dc10a5758d68d52c04bc16a0200656159f6aa117.png" src="../_images/07bd62db2e10b185109ba636dc10a5758d68d52c04bc16a0200656159f6aa117.png" />
+<img alt="../_images/ffa68c749aac631a02012b43324e71c09a4dcac8e41fc90193e395f5ab4e98c6.png" src="../_images/ffa68c749aac631a02012b43324e71c09a4dcac8e41fc90193e395f5ab4e98c6.png" />
+</div>
+</div>
+</section>
+<section id="optimization-example-inventory">
+<h2>Optimization example: inventory<a class="headerlink" href="#optimization-example-inventory" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pulp</span>
+<span class="k">class</span> <span class="nc">Warehouse</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">initial_inventory</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span> <span class="o">=</span> <span class="n">initial_inventory</span>
+
+<span class="k">class</span> <span class="nc">Store</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">demand_over_time</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        demand_over_time: list of demands, one value per time step</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">demand_over_time</span> <span class="o">=</span> <span class="n">demand_over_time</span>
+
+
+<span class="kn">import</span> <span class="nn">pulp</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">class</span> <span class="nc">SupplyChainSimulation</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">warehouse</span><span class="p">,</span> <span class="n">store</span><span class="p">,</span>
+                 <span class="n">holding_cost</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">shortage_cost</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">ordering_cost</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warehouse</span> <span class="o">=</span> <span class="n">warehouse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="n">store</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">holding_cost</span> <span class="o">=</span> <span class="n">holding_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortage_cost</span> <span class="o">=</span> <span class="n">shortage_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ordering_cost</span> <span class="o">=</span> <span class="n">ordering_cost</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">demand_over_time</span><span class="p">)</span>
+
+        <span class="c1"># Logs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inventory_log</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order_log</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortage_log</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost_log</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">run_simulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span><span class="p">):</span>
+            <span class="n">demand_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">demand_over_time</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+            <span class="c1"># 1) Solve the MILP for reorder</span>
+            <span class="n">reorder_qty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimize_inventory</span><span class="p">(</span><span class="n">demand</span><span class="o">=</span><span class="n">demand_t</span><span class="p">)</span>
+
+            <span class="c1"># 2) Apply reorder</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span> <span class="o">+=</span> <span class="n">reorder_qty</span>
+
+            <span class="c1"># 3) Fulfill store demand</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span> <span class="o">&gt;=</span> <span class="n">demand_t</span><span class="p">:</span>
+                <span class="n">shortage</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span> <span class="o">-=</span> <span class="n">demand_t</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">shortage</span> <span class="o">=</span> <span class="n">demand_t</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># 4) Calculate costs</span>
+            <span class="n">order_cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordering_cost</span> <span class="o">*</span> <span class="n">reorder_qty</span>
+            <span class="n">hold_cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">holding_cost</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span>
+            <span class="n">short_cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shortage_cost</span> <span class="o">*</span> <span class="n">shortage</span>
+            <span class="n">total_cost</span> <span class="o">=</span> <span class="n">order_cost</span> <span class="o">+</span> <span class="n">hold_cost</span> <span class="o">+</span> <span class="n">short_cost</span>
+
+            <span class="c1"># 5) Log</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reorder_qty</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shortage_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shortage</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total_cost</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">: Demand=</span><span class="si">{</span><span class="n">demand_t</span><span class="si">}</span><span class="s2">, Reorder=</span><span class="si">{</span><span class="n">reorder_qty</span><span class="si">}</span><span class="s2">, &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;Ending Inventory=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span><span class="si">}</span><span class="s2">, Shortage=</span><span class="si">{</span><span class="n">shortage</span><span class="si">}</span><span class="s2">, &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;Cost=</span><span class="si">{</span><span class="n">total_cost</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">optimize_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demand</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve a single-period MILP to decide reorder quantity,</span>
+<span class="sd">        given current warehouse inventory and known demand for THIS time step.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">problem</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpProblem</span><span class="p">(</span><span class="s2">&quot;InventoryOptimization&quot;</span><span class="p">,</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpMinimize</span><span class="p">)</span>
+
+        <span class="c1"># Decision variables</span>
+        <span class="n">reorder_var</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpVariable</span><span class="p">(</span><span class="s1">&#39;reorder_qty&#39;</span><span class="p">,</span> <span class="n">lowBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cat</span><span class="o">=</span><span class="n">pulp</span><span class="o">.</span><span class="n">LpInteger</span><span class="p">)</span>
+        <span class="n">final_inv</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpVariable</span><span class="p">(</span><span class="s1">&#39;final_inv&#39;</span><span class="p">,</span> <span class="n">lowBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cat</span><span class="o">=</span><span class="n">pulp</span><span class="o">.</span><span class="n">LpInteger</span><span class="p">)</span>     <span class="c1"># On-hand inventory after demand</span>
+        <span class="n">shortage_var</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpVariable</span><span class="p">(</span><span class="s1">&#39;shortage&#39;</span><span class="p">,</span> <span class="n">lowBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cat</span><span class="o">=</span><span class="n">pulp</span><span class="o">.</span><span class="n">LpInteger</span><span class="p">)</span>  <span class="c1"># Unmet demand</span>
+
+        <span class="c1"># Enforce the balance: final_inv + shortage = current_inv + reorder - demand</span>
+        <span class="n">problem</span> <span class="o">+=</span> <span class="p">(</span><span class="n">final_inv</span> <span class="o">+</span> <span class="n">shortage_var</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span> <span class="o">+</span> <span class="n">reorder_var</span> <span class="o">-</span> <span class="n">demand</span><span class="p">)</span>
+
+        <span class="c1"># Objective: ordering cost + holding cost + shortage cost</span>
+        <span class="n">cost_expr</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ordering_cost</span> <span class="o">*</span> <span class="n">reorder_var</span>
+                     <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">holding_cost</span> <span class="o">*</span> <span class="n">final_inv</span>
+                     <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">shortage_cost</span> <span class="o">*</span> <span class="n">shortage_var</span><span class="p">)</span>
+        <span class="n">problem</span> <span class="o">+=</span> <span class="n">cost_expr</span>
+
+        <span class="c1"># Solve</span>
+        <span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">pulp</span><span class="o">.</span><span class="n">PULP_CBC_CMD</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">reorder_qty</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pulp</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">reorder_var</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">reorder_qty</span>
+
+    <span class="k">def</span> <span class="nf">plot_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_log</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Reorder Qty&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Reorder Over Time&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time Step&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Units&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inventory_log</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Inventory&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Inventory Over Time&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time Step&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Units on Hand&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shortage_log</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Shortage&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Shortage Over Time&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time Step&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Unmet Demand&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_log</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Cost&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Cost Over Time&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time Step&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Cost&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Warehouse</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">initial_inventory</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span> <span class="o">=</span> <span class="n">initial_inventory</span>
+
+<span class="k">class</span> <span class="nc">Store</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">demand_over_time</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">demand_over_time</span> <span class="o">=</span> <span class="n">demand_over_time</span>
+
+<span class="k">def</span> <span class="nf">example_inventory_optimization</span><span class="p">():</span>
+    <span class="n">store_demand</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+    <span class="n">store1</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;Store_1&quot;</span><span class="p">,</span> <span class="n">demand_over_time</span><span class="o">=</span><span class="n">store_demand</span><span class="p">)</span>
+    <span class="n">warehouse1</span> <span class="o">=</span> <span class="n">Warehouse</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;Warehouse_1&quot;</span><span class="p">,</span> <span class="n">initial_inventory</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">SupplyChainSimulation</span><span class="p">(</span>
+        <span class="n">warehouse</span><span class="o">=</span><span class="n">warehouse1</span><span class="p">,</span>
+        <span class="n">store</span><span class="o">=</span><span class="n">store1</span><span class="p">,</span>
+        <span class="n">holding_cost</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">shortage_cost</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">ordering_cost</span><span class="o">=</span><span class="mf">2.0</span>
+    <span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">run_simulation</span><span class="p">()</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+
+<span class="n">example_inventory_optimization</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 0: Demand=10, Reorder=0, Ending Inventory=0, Shortage=0, Cost=0.00
+Time 1: Demand=25, Reorder=25, Ending Inventory=0, Shortage=0, Cost=50.00
+Time 2: Demand=30, Reorder=30, Ending Inventory=0, Shortage=0, Cost=60.00
+Time 3: Demand=40, Reorder=40, Ending Inventory=0, Shortage=0, Cost=80.00
+Time 4: Demand=10, Reorder=10, Ending Inventory=0, Shortage=0, Cost=20.00
+Time 5: Demand=30, Reorder=30, Ending Inventory=0, Shortage=0, Cost=60.00
+Time 6: Demand=50, Reorder=50, Ending Inventory=0, Shortage=0, Cost=100.00
+Time 7: Demand=60, Reorder=60, Ending Inventory=0, Shortage=0, Cost=120.00
+Time 8: Demand=20, Reorder=20, Ending Inventory=0, Shortage=0, Cost=40.00
+Time 9: Demand=10, Reorder=10, Ending Inventory=0, Shortage=0, Cost=20.00
+</pre></div>
+</div>
+<img alt="../_images/13a070096854be1dfd0c43cca86676474e8da307b650d944b5cb43fb9ccd0432.png" src="../_images/13a070096854be1dfd0c43cca86676474e8da307b650d944b5cb43fb9ccd0432.png" />
 </div>
 </div>
 </section>
@@ -1055,14 +1253,22 @@ Restocked Warehouse_1: +50 units of WidgetC. (Previous: 14, New: 64)
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Digital Twin</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-blocks">Simulation blocks</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warehouse">Warehouse</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trucks">Trucks</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#store">Store</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation">Simulation</a></li>
 </ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#playground">Playground</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation">Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-example-inventory">Optimization example: inventory</a></li>
+</ul>
+</li>
+</ul>
+
   </nav></div>
 
 </div></div>
