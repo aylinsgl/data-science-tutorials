@@ -583,12 +583,20 @@ Store inventory: {&#39;A&#39;: 5}
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="k">class</span> <span class="nc">SupplyChainSimulation</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">warehouses</span><span class="p">,</span> <span class="n">trucks</span><span class="p">,</span> <span class="n">stores</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">warehouses</span><span class="p">,</span> <span class="n">trucks</span><span class="p">,</span> <span class="n">stores</span><span class="p">,</span>
+                 <span class="n">restock_threshold</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">restock_amount</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        restock_threshold: If warehouse inventory &lt; this value, we restock.</span>
+<span class="sd">        restock_amount: How many units of an item to add during restock.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">warehouses</span> <span class="o">=</span> <span class="n">warehouses</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trucks</span> <span class="o">=</span> <span class="n">trucks</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stores</span> <span class="o">=</span> <span class="n">stores</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span> <span class="o">=</span> <span class="mi">0</span>
         
+        <span class="bp">self</span><span class="o">.</span><span class="n">restock_threshold</span> <span class="o">=</span> <span class="n">restock_threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restock_amount</span> <span class="o">=</span> <span class="n">restock_amount</span>
+
         <span class="c1"># Demand log: list of dicts, each with time_step, store, item, quantity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">demand_log</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># Inventory log: list of dicts, each with time_step, warehouse_location, item, quantity</span>
@@ -635,8 +643,11 @@ Store inventory: {&#39;A&#39;: 5}
             <span class="c1"># Add to store’s inventory</span>
             <span class="n">store</span><span class="o">.</span><span class="n">inventory</span><span class="p">[</span><span class="n">item_to_order</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item_to_order</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">quantity_to_order</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Delivered </span><span class="si">{</span><span class="n">quantity_to_order</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">item_to_order</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">store</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            
-        <span class="c1"># After processing all stores in this time step, log the warehouse inventory</span>
+
+        <span class="c1"># After delivering to stores, restock if needed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restock_warehouses</span><span class="p">()</span>
+
+        <span class="c1"># Log updated warehouse inventory at the end of this step</span>
         <span class="k">for</span> <span class="n">warehouse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">warehouses</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">qty</span> <span class="ow">in</span> <span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">inventory_log</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
@@ -647,6 +658,19 @@ Store inventory: {&#39;A&#39;: 5}
                 <span class="p">})</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">restock_warehouses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if warehouse inventory is below the restock_threshold; </span>
+<span class="sd">        if so, adds restock_amount of that item.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">warehouse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">warehouses</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">,</span> <span class="s2">&quot;WidgetB&quot;</span><span class="p">,</span> <span class="s2">&quot;WidgetC&quot;</span><span class="p">]:</span>
+                <span class="n">current_qty</span> <span class="o">=</span> <span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">current_qty</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">restock_threshold</span><span class="p">:</span>
+                    <span class="n">warehouse</span><span class="o">.</span><span class="n">add_inventory</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">restock_amount</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Restocked </span><span class="si">{</span><span class="n">warehouse</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">: +</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">restock_amount</span><span class="si">}</span><span class="s2"> units of </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">. &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;(Previous: </span><span class="si">{</span><span class="n">current_qty</span><span class="si">}</span><span class="s2">, New: </span><span class="si">{</span><span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">run_simulation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
@@ -673,7 +697,7 @@ Store inventory: {&#39;A&#39;: 5}
         <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">filtered_demand</span><span class="p">:</span>
             <span class="n">t</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;time_step&quot;</span><span class="p">]</span>
             <span class="n">q</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;quantity&quot;</span><span class="p">]</span>
-            <span class="n">demand_by_time</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand_by_time</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">q</span>  <span class="c1"># sum if multiple orders in same step</span>
+            <span class="n">demand_by_time</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand_by_time</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">q</span>
 
         <span class="c1"># ----------------------</span>
         <span class="c1"># 2) Aggregate INVENTORY</span>
@@ -687,8 +711,7 @@ Store inventory: {&#39;A&#39;: 5}
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">filtered_inventory</span><span class="p">:</span>
             <span class="n">t</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;time_step&quot;</span><span class="p">]</span>
             <span class="n">q</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;quantity&quot;</span><span class="p">]</span>
-            <span class="c1"># If multiple items in the same step, sum them or pick a strategy</span>
-            <span class="n">inventory_by_time</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>  <span class="c1"># or inventory_by_time.get(t, 0) + q</span>
+            <span class="n">inventory_by_time</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
 
         <span class="c1"># ----------------------</span>
         <span class="c1"># 3) Merge time steps</span>
@@ -717,7 +740,8 @@ Store inventory: {&#39;A&#39;: 5}
         <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title_str</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time Step&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Quantity&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">time_steps</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">time_steps</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">time_steps</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -726,127 +750,250 @@ Store inventory: {&#39;A&#39;: 5}
 </div>
 </details>
 </div>
+<p>Plot demand and inventory over time with restocking</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Now let&#39;s instantiate everything and run a short simulation:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instantiate supply chain objects</span>
 <span class="n">warehouse1</span> <span class="o">=</span> <span class="n">Warehouse</span><span class="p">(</span><span class="s2">&quot;Warehouse_1&quot;</span><span class="p">,</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-<span class="c1"># Pre-populate warehouse</span>
-<span class="n">warehouse1</span><span class="o">.</span><span class="n">add_inventory</span><span class="p">(</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">warehouse1</span><span class="o">.</span><span class="n">add_inventory</span><span class="p">(</span><span class="s2">&quot;WidgetB&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="c1"># initial inventory</span>
+<span class="n">warehouse1</span><span class="o">.</span><span class="n">add_inventory</span><span class="p">(</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">warehouse1</span><span class="o">.</span><span class="n">add_inventory</span><span class="p">(</span><span class="s2">&quot;WidgetB&quot;</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="n">warehouse1</span><span class="o">.</span><span class="n">add_inventory</span><span class="p">(</span><span class="s2">&quot;WidgetC&quot;</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
 
-<span class="n">truck1</span> <span class="o">=</span> <span class="n">Truck</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;Garage&quot;</span><span class="p">,</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-<span class="n">store1</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;Store_1&quot;</span><span class="p">,</span> <span class="n">inventory</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
-<span class="n">store2</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;Store_2&quot;</span><span class="p">,</span> <span class="n">inventory</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WidgetB&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">})</span>
+<span class="n">truck1</span> <span class="o">=</span> <span class="n">Truck</span><span class="p">(</span><span class="s2">&quot;Garage&quot;</span><span class="p">,</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">store1</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span><span class="s2">&quot;Store_1&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+<span class="n">store2</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span><span class="s2">&quot;Store_2&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;WidgetB&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
 
-<span class="c1"># Create the simulation</span>
+<span class="c1"># Create simulation with restocking threshold = 20, restock_amount = 50</span>
 <span class="n">sim</span> <span class="o">=</span> <span class="n">SupplyChainSimulation</span><span class="p">(</span>
     <span class="n">warehouses</span><span class="o">=</span><span class="p">[</span><span class="n">warehouse1</span><span class="p">],</span>
     <span class="n">trucks</span><span class="o">=</span><span class="p">[</span><span class="n">truck1</span><span class="p">],</span>
-    <span class="n">stores</span><span class="o">=</span><span class="p">[</span><span class="n">store1</span><span class="p">,</span> <span class="n">store2</span><span class="p">]</span>
+    <span class="n">stores</span><span class="o">=</span><span class="p">[</span><span class="n">store1</span><span class="p">,</span> <span class="n">store2</span><span class="p">],</span>
+    <span class="n">restock_threshold</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">restock_amount</span><span class="o">=</span><span class="mi">50</span>
 <span class="p">)</span>
 
-<span class="c1"># Run for 5 time steps</span>
-<span class="n">sim</span><span class="o">.</span><span class="n">run_simulation</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># Run simulation</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">run_simulation</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
-<span class="c1"># Plot Demand &amp; Inventory together</span>
-<span class="c1"># e.g. focusing on Warehouse_1&#39;s inventory and all demands from Store_1</span>
-<span class="n">sim</span><span class="o">.</span><span class="n">plot_demand_and_inventory</span><span class="p">(</span><span class="n">store_location</span><span class="o">=</span><span class="s2">&quot;Store_1&quot;</span><span class="p">,</span> <span class="n">warehouse_location</span><span class="o">=</span><span class="s2">&quot;Warehouse_1&quot;</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">)</span>
+<span class="c1"># Plot demand &amp; inventory, focusing on WidgetA at Warehouse_1 and Store_1</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">plot_demand_and_inventory</span><span class="p">(</span><span class="n">store_location</span><span class="o">=</span><span class="s2">&quot;Store_1&quot;</span><span class="p">,</span> 
+                              <span class="n">warehouse_location</span><span class="o">=</span><span class="s2">&quot;Warehouse_1&quot;</span><span class="p">,</span> 
+                              <span class="n">item</span><span class="o">=</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Time Step 0 ---
-Store at Store_1 requests 13 units of WidgetA.
-Loading 13 of WidgetA onto truck.
-Delivered 13 WidgetA to Store_1.
+Store at Store_1 requests 9 units of WidgetA.
+Loading 9 of WidgetA onto truck.
+Delivered 9 WidgetA to Store_1.
 
-Store at Store_2 requests 7 units of WidgetC.
-Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+Store at Store_2 requests 15 units of WidgetA.
+Loading 15 of WidgetA onto truck.
+Delivered 15 WidgetA to Store_2.
 
 
 --- Time Step 1 ---
-Store at Store_1 requests 5 units of WidgetB.
-Loading 5 of WidgetB onto truck.
-Delivered 5 WidgetB to Store_1.
+Store at Store_1 requests 13 units of WidgetC.
+Loading 13 of WidgetC onto truck.
+Delivered 13 WidgetC to Store_1.
 
-Store at Store_2 requests 9 units of WidgetB.
-Loading 9 of WidgetB onto truck.
-Delivered 9 WidgetB to Store_2.
+Store at Store_2 requests 15 units of WidgetA.
+Loading 15 of WidgetA onto truck.
+Delivered 15 WidgetA to Store_2.
 
+Restocked Warehouse_1: +50 units of WidgetA. (Previous: 11, New: 61)
 
 --- Time Step 2 ---
-Store at Store_1 requests 10 units of WidgetA.
+Store at Store_1 requests 14 units of WidgetA.
+Loading 14 of WidgetA onto truck.
+Delivered 14 WidgetA to Store_1.
+
+Store at Store_2 requests 7 units of WidgetB.
+Loading 7 of WidgetB onto truck.
+Delivered 7 WidgetB to Store_2.
+
+
+--- Time Step 3 ---
+Store at Store_1 requests 5 units of WidgetC.
+Loading 5 of WidgetC onto truck.
+Delivered 5 WidgetC to Store_1.
+
+Store at Store_2 requests 14 units of WidgetB.
+Loading 14 of WidgetB onto truck.
+Delivered 14 WidgetB to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetB. (Previous: 19, New: 69)
+
+--- Time Step 4 ---
+Store at Store_1 requests 6 units of WidgetC.
+Loading 6 of WidgetC onto truck.
+Delivered 6 WidgetC to Store_1.
+
+Store at Store_2 requests 10 units of WidgetC.
+Loading 10 of WidgetC onto truck.
+Delivered 10 WidgetC to Store_2.
+
+
+--- Time Step 5 ---
+Store at Store_1 requests 11 units of WidgetC.
+Loading 11 of WidgetC onto truck.
+Delivered 11 WidgetC to Store_1.
+
+Store at Store_2 requests 10 units of WidgetA.
 Loading 10 of WidgetA onto truck.
-Delivered 10 WidgetA to Store_1.
+Delivered 10 WidgetA to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetC. (Previous: 15, New: 65)
+
+--- Time Step 6 ---
+Store at Store_1 requests 13 units of WidgetB.
+Loading 13 of WidgetB onto truck.
+Delivered 13 WidgetB to Store_1.
+
+Store at Store_2 requests 8 units of WidgetB.
+Loading 8 of WidgetB onto truck.
+Delivered 8 WidgetB to Store_2.
+
+
+--- Time Step 7 ---
+Store at Store_1 requests 11 units of WidgetA.
+Loading 11 of WidgetA onto truck.
+Delivered 11 WidgetA to Store_1.
+
+Store at Store_2 requests 11 units of WidgetA.
+Loading 11 of WidgetA onto truck.
+Delivered 11 WidgetA to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetA. (Previous: 15, New: 65)
+
+--- Time Step 8 ---
+Store at Store_1 requests 8 units of WidgetB.
+Loading 8 of WidgetB onto truck.
+Delivered 8 WidgetB to Store_1.
+
+Store at Store_2 requests 10 units of WidgetB.
+Loading 10 of WidgetB onto truck.
+Delivered 10 WidgetB to Store_2.
+
+
+--- Time Step 9 ---
+Store at Store_1 requests 15 units of WidgetA.
+Loading 15 of WidgetA onto truck.
+Delivered 15 WidgetA to Store_1.
+
+Store at Store_2 requests 8 units of WidgetC.
+Loading 8 of WidgetC onto truck.
+Delivered 8 WidgetC to Store_2.
+
+
+--- Time Step 10 ---
+Store at Store_1 requests 7 units of WidgetB.
+Loading 7 of WidgetB onto truck.
+Delivered 7 WidgetB to Store_1.
+
+Store at Store_2 requests 7 units of WidgetB.
+Loading 7 of WidgetB onto truck.
+Delivered 7 WidgetB to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetB. (Previous: 16, New: 66)
+
+--- Time Step 11 ---
+Store at Store_1 requests 7 units of WidgetA.
+Loading 7 of WidgetA onto truck.
+Delivered 7 WidgetA to Store_1.
+
+Store at Store_2 requests 15 units of WidgetA.
+Loading 15 of WidgetA onto truck.
+Delivered 15 WidgetA to Store_2.
+
+
+--- Time Step 12 ---
+Store at Store_1 requests 10 units of WidgetC.
+Loading 10 of WidgetC onto truck.
+Delivered 10 WidgetC to Store_1.
+
+Store at Store_2 requests 11 units of WidgetC.
+Loading 11 of WidgetC onto truck.
+Delivered 11 WidgetC to Store_2.
+
+
+--- Time Step 13 ---
+Store at Store_1 requests 15 units of WidgetC.
+Loading 15 of WidgetC onto truck.
+Delivered 15 WidgetC to Store_1.
+
+Store at Store_2 requests 9 units of WidgetA.
+Loading 9 of WidgetA onto truck.
+Delivered 9 WidgetA to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetA. (Previous: 19, New: 69)
+
+--- Time Step 14 ---
+Store at Store_1 requests 8 units of WidgetC.
+Loading 8 of WidgetC onto truck.
+Delivered 8 WidgetC to Store_1.
+
+Store at Store_2 requests 7 units of WidgetB.
+Loading 7 of WidgetB onto truck.
+Delivered 7 WidgetB to Store_2.
+
+Restocked Warehouse_1: +50 units of WidgetC. (Previous: 13, New: 63)
+
+--- Time Step 15 ---
+Store at Store_1 requests 6 units of WidgetA.
+Loading 6 of WidgetA onto truck.
+Delivered 6 WidgetA to Store_1.
 
 Store at Store_2 requests 6 units of WidgetB.
 Loading 6 of WidgetB onto truck.
 Delivered 6 WidgetB to Store_2.
 
 
---- Time Step 3 ---
-Store at Store_1 requests 15 units of WidgetC.
-Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+--- Time Step 16 ---
+Store at Store_1 requests 10 units of WidgetA.
+Loading 10 of WidgetA onto truck.
+Delivered 10 WidgetA to Store_1.
 
 Store at Store_2 requests 6 units of WidgetC.
-Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+Loading 6 of WidgetC onto truck.
+Delivered 6 WidgetC to Store_2.
 
 
---- Time Step 4 ---
-Store at Store_1 requests 8 units of WidgetA.
-Loading 8 of WidgetA onto truck.
-Delivered 8 WidgetA to Store_1.
+--- Time Step 17 ---
+Store at Store_1 requests 15 units of WidgetC.
+Loading 15 of WidgetC onto truck.
+Delivered 15 WidgetC to Store_1.
 
-Store at Store_2 requests 5 units of WidgetC.
-Warehouse at Warehouse_1 does not have enough WidgetC in stock.
-
-
---- Time Step 5 ---
-Store at Store_1 requests 11 units of WidgetA.
-Loading 11 of WidgetA onto truck.
-Delivered 11 WidgetA to Store_1.
-
-Store at Store_2 requests 5 units of WidgetC.
-Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+Store at Store_2 requests 12 units of WidgetA.
+Loading 12 of WidgetA onto truck.
+Delivered 12 WidgetA to Store_2.
 
 
---- Time Step 6 ---
-Store at Store_1 requests 8 units of WidgetA.
-Loading 8 of WidgetA onto truck.
-Delivered 8 WidgetA to Store_1.
+--- Time Step 18 ---
+Store at Store_1 requests 6 units of WidgetC.
+Loading 6 of WidgetC onto truck.
+Delivered 6 WidgetC to Store_1.
 
-Store at Store_2 requests 5 units of WidgetB.
-Loading 5 of WidgetB onto truck.
-Delivered 5 WidgetB to Store_2.
-
-
---- Time Step 7 ---
-Store at Store_1 requests 8 units of WidgetC.
-Warehouse at Warehouse_1 does not have enough WidgetC in stock.
-
-Store at Store_2 requests 13 units of WidgetA.
-Loading 13 of WidgetA onto truck.
-Delivered 13 WidgetA to Store_2.
+Store at Store_2 requests 7 units of WidgetC.
+Loading 7 of WidgetC onto truck.
+Delivered 7 WidgetC to Store_2.
 
 
---- Time Step 8 ---
-Store at Store_1 requests 11 units of WidgetC.
-Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+--- Time Step 19 ---
+Store at Store_1 requests 15 units of WidgetC.
+Loading 15 of WidgetC onto truck.
+Delivered 15 WidgetC to Store_1.
 
-Store at Store_2 requests 9 units of WidgetA.
-Loading 9 of WidgetA onto truck.
-Delivered 9 WidgetA to Store_2.
+Store at Store_2 requests 15 units of WidgetB.
+Loading 15 of WidgetB onto truck.
+Delivered 15 WidgetB to Store_2.
 
-
---- Time Step 9 ---
-Store at Store_1 requests 14 units of WidgetC.
-Warehouse at Warehouse_1 does not have enough WidgetC in stock.
-
-Store at Store_2 requests 10 units of WidgetC.
-Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+Restocked Warehouse_1: +50 units of WidgetC. (Previous: 14, New: 64)
 </pre></div>
 </div>
-<img alt="../_images/1d0a8b6a42e82cf8f329abdec74583777d314eb92c388f9b9ea1ea8a484bcbe3.png" src="../_images/1d0a8b6a42e82cf8f329abdec74583777d314eb92c388f9b9ea1ea8a484bcbe3.png" />
+<img alt="../_images/07bd62db2e10b185109ba636dc10a5758d68d52c04bc16a0200656159f6aa117.png" src="../_images/07bd62db2e10b185109ba636dc10a5758d68d52c04bc16a0200656159f6aa117.png" />
 </div>
 </div>
 </section>
