@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -359,7 +359,13 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-blocks">Simulation blocks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-blocks">Simulation blocks</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warehouse">Warehouse</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trucks">Trucks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#store">Store</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation">Simulation</a></li>
 </ul>
             </nav>
         </div>
@@ -391,6 +397,8 @@
 <li><p>Improve the picking processes <em>(output)</em> in your warehouse to prepare store replenishment orders <em>(input)</em></p></li>
 <li><p>Schedule your production (output) based on demand forecasts built with the stores’ sales historical data (input)</p></li>
 </ul>
+<section id="warehouse">
+<h3>Warehouse<a class="headerlink" href="#warehouse" title="Link to this heading">#</a></h3>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -447,6 +455,399 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>if your final goal is to use the insights this model provides, ensure that all the stakeholders validate the assumptions and parameters used to build it.</p>
+</div>
+</section>
+<section id="trucks">
+<h3>Trucks<a class="headerlink" href="#trucks" title="Link to this heading">#</a></h3>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a Truck class to represent a truck</span>
+<span class="k">class</span> <span class="nc">Truck</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">capacity</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capacity</span> <span class="o">=</span> <span class="n">capacity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cargo</span> <span class="o">=</span> <span class="p">{}</span>
+        
+    <span class="k">def</span> <span class="nf">load_cargo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">quantity</span><span class="p">):</span>
+        <span class="c1"># check if there is enough capacity to load cargo</span>
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cargo</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="n">quantity</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacity</span><span class="p">:</span>
+            <span class="c1"># either add to cargo or update quantity</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cargo</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cargo</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">+=</span> <span class="n">quantity</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cargo</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantity</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: Not enough capacity to load cargo.&quot;</span><span class="p">)</span>
+            
+    <span class="k">def</span> <span class="nf">unload_cargo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">quantity</span><span class="p">):</span>
+        <span class="c1"># check if item is in cargo and if there is enough quantity to unload</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cargo</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cargo</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">quantity</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cargo</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">-=</span> <span class="n">quantity</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: Cargo not found.&quot;</span><span class="p">)</span>
+            
+    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a truck at location &quot;Paris&quot; with a capacity of 100</span>
+<span class="n">truck</span> <span class="o">=</span> <span class="n">Truck</span><span class="p">(</span><span class="s2">&quot;Paris&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Load 50 units of item &quot;A&quot; onto the truck</span>
+<span class="n">truck</span><span class="o">.</span><span class="n">load_cargo</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># Move the truck to location &quot;Lille&quot;</span>
+<span class="n">truck</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="s2">&quot;Lille&quot;</span><span class="p">)</span>
+
+<span class="c1"># Unload 25 units of item &quot;A&quot; from the truck</span>
+<span class="n">truck</span><span class="o">.</span><span class="n">unload_cargo</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Truck cargo: </span><span class="si">{</span><span class="n">truck</span><span class="o">.</span><span class="n">cargo</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Truck cargo: {&#39;A&#39;: 25}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="store">
+<h3>Store<a class="headerlink" href="#store" title="Link to this heading">#</a></h3>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a Store class to represent a store</span>
+<span class="k">class</span> <span class="nc">Store</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">inventory</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span> <span class="o">=</span> <span class="n">inventory</span>
+        
+    <span class="k">def</span> <span class="nf">place_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">quantity</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">quantity</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">-=</span> <span class="n">quantity</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Order fulfilled.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: Not enough inventory to fulfill order.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a store at location &quot;New York&quot; with 10 units of item &quot;A&quot; in inventory</span>
+<span class="n">store</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span><span class="s2">&quot;New York&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+
+<span class="c1"># Place an order for 5 units of item &quot;A&quot;</span>
+<span class="n">store</span><span class="o">.</span><span class="n">place_order</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Store inventory: </span><span class="si">{</span><span class="n">store</span><span class="o">.</span><span class="n">inventory</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Order fulfilled.
+Store inventory: {&#39;A&#39;: 5}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="simulation">
+<h2>Simulation<a class="headerlink" href="#simulation" title="Link to this heading">#</a></h2>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">class</span> <span class="nc">SupplyChainSimulation</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">warehouses</span><span class="p">,</span> <span class="n">trucks</span><span class="p">,</span> <span class="n">stores</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warehouses</span> <span class="o">=</span> <span class="n">warehouses</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trucks</span> <span class="o">=</span> <span class="n">trucks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stores</span> <span class="o">=</span> <span class="n">stores</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="c1"># Demand log: list of dicts, each with time_step, store, item, quantity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">demand_log</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Inventory log: list of dicts, each with time_step, warehouse_location, item, quantity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inventory_log</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">run_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--- Time Step </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time_step</span><span class="si">}</span><span class="s2"> ---&quot;</span><span class="p">)</span>
+
+        <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">,</span> <span class="s2">&quot;WidgetB&quot;</span><span class="p">,</span> <span class="s2">&quot;WidgetC&quot;</span><span class="p">]</span>  <span class="c1"># possible SKUs</span>
+        <span class="k">for</span> <span class="n">store</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stores</span><span class="p">:</span>
+            <span class="n">item_to_order</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+            <span class="n">quantity_to_order</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Store at </span><span class="si">{</span><span class="n">store</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2"> requests </span><span class="si">{</span><span class="n">quantity_to_order</span><span class="si">}</span><span class="s2"> units of </span><span class="si">{</span><span class="n">item_to_order</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># LOG the demand</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">demand_log</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;time_step&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span><span class="p">,</span>
+                <span class="s2">&quot;store_location&quot;</span><span class="p">:</span> <span class="n">store</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+                <span class="s2">&quot;item&quot;</span><span class="p">:</span> <span class="n">item_to_order</span><span class="p">,</span>
+                <span class="s2">&quot;quantity&quot;</span><span class="p">:</span> <span class="n">quantity_to_order</span>
+            <span class="p">})</span>
+
+            <span class="c1"># We&#39;ll just use the first truck &amp; first warehouse for demonstration</span>
+            <span class="n">truck</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trucks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">warehouse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">warehouses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># Move truck to warehouse</span>
+            <span class="k">if</span> <span class="n">truck</span><span class="o">.</span><span class="n">location</span> <span class="o">!=</span> <span class="n">warehouse</span><span class="o">.</span><span class="n">location</span><span class="p">:</span>
+                <span class="n">truck</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">warehouse</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+
+            <span class="c1"># Check warehouse inventory &amp; load cargo</span>
+            <span class="k">if</span> <span class="n">item_to_order</span> <span class="ow">in</span> <span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span> <span class="ow">and</span> <span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span><span class="p">[</span><span class="n">item_to_order</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">quantity_to_order</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading </span><span class="si">{</span><span class="n">quantity_to_order</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">item_to_order</span><span class="si">}</span><span class="s2"> onto truck.&quot;</span><span class="p">)</span>
+                <span class="n">warehouse</span><span class="o">.</span><span class="n">remove_inventory</span><span class="p">(</span><span class="n">item_to_order</span><span class="p">,</span> <span class="n">quantity_to_order</span><span class="p">)</span>
+                <span class="n">truck</span><span class="o">.</span><span class="n">load_cargo</span><span class="p">(</span><span class="n">item_to_order</span><span class="p">,</span> <span class="n">quantity_to_order</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warehouse at </span><span class="si">{</span><span class="n">warehouse</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2"> does not have enough </span><span class="si">{</span><span class="n">item_to_order</span><span class="si">}</span><span class="s2"> in stock.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>  <span class="c1"># skip delivery if not enough stock</span>
+
+            <span class="c1"># Deliver to store</span>
+            <span class="n">truck</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+            <span class="n">truck</span><span class="o">.</span><span class="n">unload_cargo</span><span class="p">(</span><span class="n">item_to_order</span><span class="p">,</span> <span class="n">quantity_to_order</span><span class="p">)</span>
+
+            <span class="c1"># Add to store’s inventory</span>
+            <span class="n">store</span><span class="o">.</span><span class="n">inventory</span><span class="p">[</span><span class="n">item_to_order</span><span class="p">]</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item_to_order</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">quantity_to_order</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Delivered </span><span class="si">{</span><span class="n">quantity_to_order</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">item_to_order</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">store</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># After processing all stores in this time step, log the warehouse inventory</span>
+        <span class="k">for</span> <span class="n">warehouse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">warehouses</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">qty</span> <span class="ow">in</span> <span class="n">warehouse</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inventory_log</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;time_step&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span><span class="p">,</span>
+                    <span class="s2">&quot;warehouse_location&quot;</span><span class="p">:</span> <span class="n">warehouse</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+                    <span class="s2">&quot;item&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">,</span>
+                    <span class="s2">&quot;quantity&quot;</span><span class="p">:</span> <span class="n">qty</span>
+                <span class="p">})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">run_simulation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">run_step</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">plot_demand_and_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                                  <span class="n">store_location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                  <span class="n">warehouse_location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                  <span class="n">item</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot both Demand (for a store) and Inventory (for a warehouse) in the same figure </span>
+<span class="sd">        as separate lines, filtered by location/item if provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ----------------------</span>
+        <span class="c1"># 1) Aggregate DEMAND</span>
+        <span class="c1"># ----------------------</span>
+        <span class="n">filtered_demand</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">demand_log</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">store_location</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;store_location&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">store_location</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">item</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">demand_by_time</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">filtered_demand</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;time_step&quot;</span><span class="p">]</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;quantity&quot;</span><span class="p">]</span>
+            <span class="n">demand_by_time</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand_by_time</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">q</span>  <span class="c1"># sum if multiple orders in same step</span>
+
+        <span class="c1"># ----------------------</span>
+        <span class="c1"># 2) Aggregate INVENTORY</span>
+        <span class="c1"># ----------------------</span>
+        <span class="n">filtered_inventory</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inventory_log</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">warehouse_location</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;warehouse_location&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">warehouse_location</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">item</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">inventory_by_time</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">filtered_inventory</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;time_step&quot;</span><span class="p">]</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;quantity&quot;</span><span class="p">]</span>
+            <span class="c1"># If multiple items in the same step, sum them or pick a strategy</span>
+            <span class="n">inventory_by_time</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>  <span class="c1"># or inventory_by_time.get(t, 0) + q</span>
+
+        <span class="c1"># ----------------------</span>
+        <span class="c1"># 3) Merge time steps</span>
+        <span class="c1"># ----------------------</span>
+        <span class="n">all_time_steps</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">demand_by_time</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">inventory_by_time</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="n">time_steps</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_time_steps</span><span class="p">)</span>
+
+        <span class="n">demand_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">demand_by_time</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_steps</span><span class="p">]</span>
+        <span class="n">inventory_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">inventory_by_time</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_steps</span><span class="p">]</span>
+
+        <span class="c1"># ----------------------</span>
+        <span class="c1"># 4) Plot both lines</span>
+        <span class="c1"># ----------------------</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_steps</span><span class="p">,</span> <span class="n">demand_values</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Demand&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_steps</span><span class="p">,</span> <span class="n">inventory_values</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Inventory&#39;</span><span class="p">)</span>
+
+        <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Demand &amp; Inventory Over Time&quot;</span>
+        <span class="k">if</span> <span class="n">store_location</span><span class="p">:</span>
+            <span class="n">title_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (Store: </span><span class="si">{</span><span class="n">store_location</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">if</span> <span class="n">warehouse_location</span><span class="p">:</span>
+            <span class="n">title_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (Warehouse: </span><span class="si">{</span><span class="n">warehouse_location</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">if</span> <span class="n">item</span><span class="p">:</span>
+            <span class="n">title_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (Item: </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title_str</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time Step&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Quantity&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">time_steps</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Now let&#39;s instantiate everything and run a short simulation:</span>
+<span class="n">warehouse1</span> <span class="o">=</span> <span class="n">Warehouse</span><span class="p">(</span><span class="s2">&quot;Warehouse_1&quot;</span><span class="p">,</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="c1"># Pre-populate warehouse</span>
+<span class="n">warehouse1</span><span class="o">.</span><span class="n">add_inventory</span><span class="p">(</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">warehouse1</span><span class="o">.</span><span class="n">add_inventory</span><span class="p">(</span><span class="s2">&quot;WidgetB&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="n">truck1</span> <span class="o">=</span> <span class="n">Truck</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;Garage&quot;</span><span class="p">,</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">store1</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;Store_1&quot;</span><span class="p">,</span> <span class="n">inventory</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+<span class="n">store2</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;Store_2&quot;</span><span class="p">,</span> <span class="n">inventory</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WidgetB&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">})</span>
+
+<span class="c1"># Create the simulation</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">SupplyChainSimulation</span><span class="p">(</span>
+    <span class="n">warehouses</span><span class="o">=</span><span class="p">[</span><span class="n">warehouse1</span><span class="p">],</span>
+    <span class="n">trucks</span><span class="o">=</span><span class="p">[</span><span class="n">truck1</span><span class="p">],</span>
+    <span class="n">stores</span><span class="o">=</span><span class="p">[</span><span class="n">store1</span><span class="p">,</span> <span class="n">store2</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># Run for 5 time steps</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">run_simulation</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Plot Demand &amp; Inventory together</span>
+<span class="c1"># e.g. focusing on Warehouse_1&#39;s inventory and all demands from Store_1</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">plot_demand_and_inventory</span><span class="p">(</span><span class="n">store_location</span><span class="o">=</span><span class="s2">&quot;Store_1&quot;</span><span class="p">,</span> <span class="n">warehouse_location</span><span class="o">=</span><span class="s2">&quot;Warehouse_1&quot;</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="s2">&quot;WidgetA&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Time Step 0 ---
+Store at Store_1 requests 13 units of WidgetA.
+Loading 13 of WidgetA onto truck.
+Delivered 13 WidgetA to Store_1.
+
+Store at Store_2 requests 7 units of WidgetC.
+Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+
+
+--- Time Step 1 ---
+Store at Store_1 requests 5 units of WidgetB.
+Loading 5 of WidgetB onto truck.
+Delivered 5 WidgetB to Store_1.
+
+Store at Store_2 requests 9 units of WidgetB.
+Loading 9 of WidgetB onto truck.
+Delivered 9 WidgetB to Store_2.
+
+
+--- Time Step 2 ---
+Store at Store_1 requests 10 units of WidgetA.
+Loading 10 of WidgetA onto truck.
+Delivered 10 WidgetA to Store_1.
+
+Store at Store_2 requests 6 units of WidgetB.
+Loading 6 of WidgetB onto truck.
+Delivered 6 WidgetB to Store_2.
+
+
+--- Time Step 3 ---
+Store at Store_1 requests 15 units of WidgetC.
+Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+
+Store at Store_2 requests 6 units of WidgetC.
+Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+
+
+--- Time Step 4 ---
+Store at Store_1 requests 8 units of WidgetA.
+Loading 8 of WidgetA onto truck.
+Delivered 8 WidgetA to Store_1.
+
+Store at Store_2 requests 5 units of WidgetC.
+Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+
+
+--- Time Step 5 ---
+Store at Store_1 requests 11 units of WidgetA.
+Loading 11 of WidgetA onto truck.
+Delivered 11 WidgetA to Store_1.
+
+Store at Store_2 requests 5 units of WidgetC.
+Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+
+
+--- Time Step 6 ---
+Store at Store_1 requests 8 units of WidgetA.
+Loading 8 of WidgetA onto truck.
+Delivered 8 WidgetA to Store_1.
+
+Store at Store_2 requests 5 units of WidgetB.
+Loading 5 of WidgetB onto truck.
+Delivered 5 WidgetB to Store_2.
+
+
+--- Time Step 7 ---
+Store at Store_1 requests 8 units of WidgetC.
+Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+
+Store at Store_2 requests 13 units of WidgetA.
+Loading 13 of WidgetA onto truck.
+Delivered 13 WidgetA to Store_2.
+
+
+--- Time Step 8 ---
+Store at Store_1 requests 11 units of WidgetC.
+Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+
+Store at Store_2 requests 9 units of WidgetA.
+Loading 9 of WidgetA onto truck.
+Delivered 9 WidgetA to Store_2.
+
+
+--- Time Step 9 ---
+Store at Store_1 requests 14 units of WidgetC.
+Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+
+Store at Store_2 requests 10 units of WidgetC.
+Warehouse at Warehouse_1 does not have enough WidgetC in stock.
+</pre></div>
+</div>
+<img alt="../_images/1d0a8b6a42e82cf8f329abdec74583777d314eb92c388f9b9ea1ea8a484bcbe3.png" src="../_images/1d0a8b6a42e82cf8f329abdec74583777d314eb92c388f9b9ea1ea8a484bcbe3.png" />
+</div>
 </div>
 </section>
 </section>
@@ -507,7 +908,13 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-blocks">Simulation blocks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-blocks">Simulation blocks</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warehouse">Warehouse</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trucks">Trucks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#store">Store</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation">Simulation</a></li>
 </ul>
   </nav></div>
 
